@@ -1,5 +1,7 @@
 # BLOOMÉ FLOWER STUDIO
 
+[![CI](https://github.com/Mindenry/bloome-flower-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/Mindenry/bloome-flower-studio/actions/workflows/ci.yml)
+
 A production-oriented, full-stack flower boutique platform: bilingual storefront (Thai / English), customer accounts, transactional checkout with delivery scheduling and inventory, provider-agnostic payments, and a complete admin portal with RBAC.
 
 > **Flowers that speak what words cannot.**

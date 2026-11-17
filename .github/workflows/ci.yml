@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, types, tests and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      DATABASE_URL: file:./data/ci.db
+      AUTH_SECRET: ci-only-secret-key-please-change-in-production
+      CRON_SECRET: ci-cron-secret
+      PAYMENT_PROVIDER: sandbox
+      MAIL_DRIVER: log
+      STORAGE_DRIVER: local
+      SEED_DEMO_DATA: "true"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare database and demo content
+        run: |
+          npm run db:migrate
+          npm run db:seed
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Commerce integration tests
+        run: npm run e2e
+
+      - name: Production build
+        run: npm run build
